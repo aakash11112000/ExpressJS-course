@@ -3,6 +3,8 @@ const http = require('http');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
+const dishRouter = require('./routes/dishRouter');
+
 const hostname = 'localhost';
 const port = 3000;
 
@@ -12,31 +14,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 
-
-//The all method is invoked irrespective of the method of the operation(GET, POST, etc.) that is being done
-app.all('/dishes', (req,res,next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next(); //This function stores the modified version of req and res and passes it to the next GET/POST/other methods
-});
-
-app.get('/dishes', (req, res, next) => {
-    //The req and res are from the app.all() method since /dishes is the same
-    res.end('Will send all the dishes to you!');
-});
-
-app.post('/dishes', (req,res,next) => {
-    res.end('Will add a the dish ' + req.body.name + ' with details ' + req.body.description);
-});
-
-app.put('/dishes', (req,res,next) => {
-    res.statusCode = 403;
-    res.end(req.method + ' operation not supported on: ' + req.url)
-});
-
-app.delete('/dishes', (req,res,next) => {
-    res.end('Deleting all dishes!')
-});
+app.use('/dishes', dishRouter);
 
 //-------------------------------------------------------------------------------------------------------
 
